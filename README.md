@@ -1,78 +1,106 @@
-# Assignment 02: Intelligent Tools for Software Evolution
+# AI Agent Pull Request Analysis
 
-This project analyzes AI-generated pull requests from the AIDev-pop/AIDev dataset for the coursework assignment.
+This repository analyzes AI-generated pull requests from the AIDev dataset to study how AI coding agents participate in software evolution workflows.
 
-## Goal
+The project builds a reproducible PR-level dataset, compares acceptance and review behavior across agents, models factors associated with merge outcomes, and examines whether peripheral changes are accepted differently from core source-code changes.
 
-Answer the three required research questions and one additional research question:
+## Research Questions
 
-- RQ1: Do AI coding agents differ in pull request acceptance rates?
-- RQ2: Do AI coding agents differ in review turnaround time?
-- RQ3: What repository/project factors are associated with acceptance of AI-generated PRs?
-- RQ4-B: Are AI PRs more accepted when they modify peripheral artifacts rather than core source code?
+- **RQ1:** Do AI coding agents differ in pull request acceptance rates?
+- **RQ2:** Do AI coding agents differ in review turnaround time?
+- **RQ3:** What repository/project factors are associated with acceptance of AI-generated PRs?
+- **RQ4-B:** Are AI PRs more accepted when they modify peripheral artifacts rather than core source code?
 
-RQ4-B is the initial choice because it is usually reproducible from touched-file paths and produces clear tables and plots.
-
-## Project Structure
+## Repository Structure
 
 ```text
+scripts/
+  download_data.py     Download AIDev tables from Hugging Face
+  prepare_data.py      Build the one-row-per-PR analysis dataset
+  analyze_rq1.py       Standalone RQ1 helper analysis
+
+notebooks/
+  analysis.ipynb       Main reproducible analysis notebook
+  analysis.executed.ipynb
+
 data/
-  raw/          Original downloaded dataset files
-  processed/    Cleaned analysis-ready files
-figures/        Exported plots for the report and presentation
-notebooks/      Reproducible Jupyter analysis
-report/         ACM-style report files
-presentation/   10-minute presentation files
+  processed/*.csv      Exported result tables
+  raw/                 Downloaded raw data, ignored by Git
+
+figures/               Exported plots used in the report
+report/                ACM-style report source and references
 ```
 
-## Planned Analysis
+Large raw and processed parquet files are not tracked in Git. They can be recreated with the steps below.
 
-1. Load the AIDev-pop/AIDev dataset.
-2. Inspect available columns and identify PR, repository, agent, review, and file-change fields.
-3. Define PR acceptance clearly, likely as whether the PR was merged.
-4. Compute RQ1 acceptance rates by agent and run a statistical comparison.
-5. Compute RQ2 review turnaround metrics by agent and run a non-parametric test.
-6. Build an RQ3 multivariable model with agent identity and at least five project/change factors.
-7. Classify changed files for RQ4-B and compare acceptance between core and peripheral changes.
-8. Export all tables and figures for the report.
+## Setup
 
-## How To Run
+Create a virtual environment and install dependencies:
 
-Install the required Python packages:
-
-```text
+```bash
 python3 -m venv .venv
 .venv/bin/python -m pip install -r requirements.txt
 ```
 
-Download the analysis datasets:
+## Reproduce the Analysis
 
-```text
+Download the dataset:
+
+```bash
 .venv/bin/python scripts/download_data.py
 ```
 
-Run the reproducible notebook:
+Prepare the PR-level analysis table:
 
-```text
-.venv/bin/jupyter notebook notebooks/analysis.ipynb
-```
-
-The notebook is the main reproducible workflow for the submission. It prepares the one-row-per-PR analysis table, runs the research-question analyses, and exports tables/figures.
-
-You can also run the data-preparation helper script directly:
-
-```text
+```bash
 .venv/bin/python scripts/prepare_data.py
 ```
 
-The main notebook is:
+Run the notebook:
 
-```text
-notebooks/analysis.ipynb
+```bash
+.venv/bin/jupyter notebook notebooks/analysis.ipynb
 ```
 
-After the dataset is available in `data/raw/`, run the notebook from top to bottom to reproduce the results.
+Run all cells from top to bottom. The notebook regenerates the processed tables in `data/processed/` and figures in `figures/`.
+
+## Main Outputs
+
+Generated result tables include:
+
+```text
+data/processed/rq1_acceptance_by_agent.csv
+data/processed/rq2_turnaround_by_agent.csv
+data/processed/rq3_logistic_regression_odds_ratios.csv
+data/processed/rq4b_acceptance_by_scope.csv
+data/processed/rq4b_acceptance_by_file_category.csv
+data/processed/rq4b_acceptance_by_agent_and_scope.csv
+```
+
+Generated figures include:
+
+```text
+figures/rq1_acceptance_by_agent.png
+figures/rq2_turnaround_by_agent.png
+figures/rq3_logistic_regression_odds_ratios.png
+figures/rq4b_acceptance_by_scope.png
+figures/rq4b_acceptance_by_agent_and_scope.png
+```
+
+The ACM-style report source is available at:
+
+```text
+report/report_acm.tex
+```
+
+## Data
+
+This project uses the AIDev dataset (`hao-li/AIDev`) from Hugging Face. The raw dataset files are downloaded locally into `data/raw/`, which is intentionally excluded from Git because of file size.
+
+## Notes on Interpretation
+
+Acceptance is defined as a pull request having a merge timestamp. Review turnaround is measured as time from PR creation to the first human review or comment. File categories are inferred from paths and extensions, so category-level results should be interpreted as heuristic and observational rather than causal.
 
 ## AI Usage Acknowledgement
 
-AI assistance was used for planning the analysis workflow, structuring the project, and drafting reproducibility documentation. All final analysis choices, interpretation, and submitted content should be reviewed by the authors.
+ChatGPT/Codex was used to support analysis planning, repository inspection, requirement interpretation, and manuscript drafting. The reported analyses, results, and interpretations remain the responsibility of the author.

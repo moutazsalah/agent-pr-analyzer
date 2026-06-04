@@ -1,0 +1,11 @@
+agent,change_scope,closed_prs,merged_prs,acceptance_rate
+Claude_Code,Peripheral/no core source,81,59,0.7283950617283951
+Claude_Code,Touches core source,299,212,0.7090301003344481
+Copilot,Peripheral/no core source,1559,745,0.47787042976266836
+Copilot,Touches core source,2332,1394,0.597770154373928
+Cursor,Peripheral/no core source,357,281,0.7871148459383753
+Cursor,Touches core source,990,724,0.7313131313131314
+Devin,Peripheral/no core source,1116,734,0.6577060931899642
+Devin,Touches core source,3557,1861,0.5231937025583356
+OpenAI_Codex,Peripheral/no core source,6776,6139,0.90599173553719
+OpenAI_Codex,Touches core source,14217,11865,0.8345642540620384
